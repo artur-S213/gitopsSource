@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres-service
+  labels:
+    app: postgres
+spec:
+  selector:
+    app: postgres
+  type: ClusterIP    # This exposes the service within the cluster (for internal communication)
+  ports:
+  - protocol: TCP
+    port: 5432
+    targetPort: 5432
