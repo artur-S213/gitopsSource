@@ -1,4 +1,4 @@
-name: main-trigger-action
+name: tag-trigger-action
 
 on:
   workflow_dispatch:
@@ -17,7 +17,8 @@ jobs:
         run: |
           curl -X POST \
           -H "Accept: application/vnd.github+json" \
-          -H "Authorization: Bearer ${{ secrets.TARGET_REPO_PAT }}" \
+          -H "Authorization: Bearer $GITHUB_TOKEN" \
           https://api.github.com/repos/artur-S213/gitopsDeploy/actions/workflows/tag.yaml/dispatches \
-          -d '{"ref":"refs/tags/${GITHUB_REF#refs/tags/}"}' 
+          -d '{"ref":"refs/tags/'"${GITHUB_REF#refs/tags/}"'"}'
+
     
