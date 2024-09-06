@@ -1,0 +1,41 @@
+name: Trigger Target Repo on Tag
+
+on:
+  push:
+    tags:
+      - '*'
+
+jobs:
+
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v1
+
+    # Check for ACR Password and Name.
+    - name: Log in to Azure Container Registry
+      run: |
+        echo "${{ secrets.AZURE_ACR_PASSWORD }}" | docker login ${{ secrets.ACR_NAME }}.azurecr.io -u ${{ secrets.AZURE_ACR_USERNAME }} --password-stdin
+        
+    - name: Build and Push pingpong image
+      run: |
+        docker build -t ${{ secrets.ACR_NAME }}.azurecr.io/pingpong408:latest -f pingpong/Dockerfile .
+        docker push ${{ secrets.ACR_NAME }}.azurecr.io/pingpong408:latest
+
+  trigger-workflow:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Trigger Workflow in Target Repository
+        env:
+          GITHUB_TOKEN: ${{ secrets.TARGET_REPO_PAT }}
+        run: |
+          curl -X POST \
+          -H "Accept: application/vnd.github+json" \
+          -H "Authorization: Bearer ${{ secrets.TARGET_REPO_PAT }}" \
+          https://api.github.com/repos/artur-S213/gitopsDeploy/actions/workflows/tag.yaml/dispatches \
+          -d '{"ref":"refs/tags/${GITHUB_REF#refs/tags/}"}'
