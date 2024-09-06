@@ -3,7 +3,7 @@ name: main-trigger-action
 on:
   workflow_dispatch:
   workflow_run:
-    workflows: ['main-build-action']
+    workflows: ['tag-build-action']
     types: [completed]
 
 jobs:

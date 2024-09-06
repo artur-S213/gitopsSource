@@ -1,4 +1,4 @@
-name: Trigger Target Repo on Tag
+name: tag-build-action
 
 on:
   push:
