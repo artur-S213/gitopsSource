@@ -19,6 +19,6 @@ jobs:
           -H "Accept: application/vnd.github+json" \
           -H "Authorization: Bearer $GITHUB_TOKEN" \
           https://api.github.com/repos/artur-S213/gitopsDeploy/actions/workflows/tag.yaml/dispatches \
-          -d '{"event_type":"custom-event","client_payload":{"tag":"${{ github.ref }}"}}'
+           -d '{"ref":"main", "inputs": {"tag":"${{ github.ref }}"}}'
 
     
